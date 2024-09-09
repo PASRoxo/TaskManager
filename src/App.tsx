@@ -1,9 +1,14 @@
-import './App.css';
-import Main from './Components/Main';
+import { Outlet } from "react-router-dom";
+import Header from "./Components/Navigation/Header";
+import Sidebar from "./Components/Navigation/Sidebar";
 
 function App() {
   return (
-    <Main />
+    <>
+      <Header />
+      <Sidebar />
+      <Outlet />
+    </>
   );
 }
 

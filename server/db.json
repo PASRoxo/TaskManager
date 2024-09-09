@@ -1,19 +1,22 @@
 {
-  "posts": [
+  "tasks": [
     {
       "id": 1,
-      "title": "json-server",
-      "author": "typicode"
-    }
-  ],
-  "comments": [
+      "title": "Task 2 edited",
+      "priority": "medium",
+      "description": "Task 2 Description edited"
+    },
     {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
+      "id": 2,
+      "title": "Task 3",
+      "priority": "low",
+      "description": "Task 3 Description"
+    },
+    {
+      "id": 3,
+      "title": "Task 4 edited",
+      "priority": "low",
+      "description": "Task 4 Description edited"
     }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
