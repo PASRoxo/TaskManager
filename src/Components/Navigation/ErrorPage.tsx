@@ -1,4 +1,4 @@
-import '../../App.css';
+import './Navigation.css';
 
 function ErrorPage() {
     return (

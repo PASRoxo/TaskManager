@@ -1,14 +1,8 @@
-import '../../App.css';
-import { useState } from 'react';
+import './Navigation.css';
 import { Link } from 'react-router-dom';
 import { SidebarMenu } from '../Menus';
 
-function Sidebar() {
-    const [sidebar, setSidebar] = useState(false)
-
-    const showSidebar = () => {
-        setSidebar(!sidebar)
-    }
+function Sidebar({sidebar, showSidebar}: any) {
 
     return (
         <>
