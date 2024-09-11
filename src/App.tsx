@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import Header from "./Components/Navigation/Header";
 import Sidebar from "./Components/Navigation/Sidebar";
 import { useState } from "react";
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 function App() {
   const [sidebar, setSidebar] = useState(false)
@@ -11,7 +13,7 @@ function App() {
     setSidebar(!sidebar)
   }
   return (
-    <>
+    <Provider store={store}>
       <Header />
       <div>
         <Sidebar sidebar={sidebar} showSidebar={showSidebar} />
@@ -19,7 +21,7 @@ function App() {
           <Outlet />
         </div>
       </div>
-    </>
+    </Provider>
   );
 }
 

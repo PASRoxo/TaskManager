@@ -2,22 +2,26 @@ import './Navigation.css';
 import { Link } from 'react-router-dom';
 import { SidebarMenu } from '../Menus';
 
-function Sidebar({sidebar, showSidebar}: any) {
+function Sidebar({ sidebar, showSidebar }: any) {
 
     return (
-        <>
-            <div className='Sidebar'>
-                <Link to='#' className='menu-bars'>
+        <div className='Sidebar'>
+            {!sidebar && (
+                <Link to='#' className='menu-int'>
                     <div className="bi bi-list" onClick={showSidebar} />
                 </Link>
-            </div>
+            )}
+
             <nav className={sidebar ? "sidebar-menu active" : "sidebar-menu"}>
-                <ul className='sidebar-items' onClick={showSidebar}>
+                <ul className='sidebar-items' >
                     <li className='sidebar-toggle'>
-                        <Link to='#' className='menu-bars'>
-                            <div className="bi bi-x-lg" />
-                        </Link>
+                        {sidebar && (
+                            <Link to='#' className='menu-int'>
+                                <div className="bi bi-x-lg" onClick={showSidebar} />
+                            </Link>
+                        )}
                     </li>
+
                     {SidebarMenu.map((item, index) => {
                         return (
                             <li key={index} className='sidebar-item'>
@@ -30,7 +34,8 @@ function Sidebar({sidebar, showSidebar}: any) {
                     })}
                 </ul>
             </nav>
-        </>
+        </div>
+
     )
 }
 
