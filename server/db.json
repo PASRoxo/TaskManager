@@ -2,7 +2,7 @@
   "tasks": [
     {
       "id": 1,
-      "title": "Task 2 edited",
+      "title": "Task 2",
       "priority": "medium",
       "description": "Task 2 Description edited"
     },
