@@ -1,14 +1,35 @@
 .content {
-    display: flex;
-    flex: 1;
-    transition: margin-left 450ms ease;
-    height: 100vh;
+  display: flex;
+  flex: 1;
+  transition: margin-left 450ms ease;
+  height: 100vh;
 }
 
 .op-sidebar {
-    margin-left: 350px;
+  margin-left: 300px;
 }
 
 .cl-sidebar {
-    margin-left: 100px;
+  margin-left: 50px;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 10px;
+}
+
+.card {
+  text-decoration: none;
+  color: #222222;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  padding: 10px;
+  border-radius: 10px;
+  width: 240px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }

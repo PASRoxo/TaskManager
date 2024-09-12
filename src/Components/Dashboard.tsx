@@ -8,14 +8,17 @@ function Dashboard() {
             <div>
                 <h2>Dashboard</h2>
             </div>
-            {DashboardMenu.map((item, index) => (
-                <Link key={index} to={item.path}>
-                    <div>
+
+
+            <h4>Shortcut Menu <i className="bi bi-grid-3x3" /></h4>
+            <div className="card-container">
+                {DashboardMenu.map((item, index) => (
+                    <Link key={index} to={item.path} className="card">
                         <h4><b>{item.title}</b></h4>
                         <p>{item.description}</p>
-                    </div>
-                </Link>
-            ))}
+                    </Link>
+                ))}
+            </div>
         </div>
     )
 }
