@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { fetchApiTasks, Task } from '../../Features/tasksSlice';
+import { Link } from 'react-router-dom';
 
 function TasksList() {
     const dispatch = useDispatch();
@@ -25,15 +26,19 @@ function TasksList() {
                 To Do List
             </h2>
 
+            <Link to={'/taskForm'} className='add-task-button'>
+                <span className="plus-icon">+</span> Add New Task
+            </Link>
+
             {status === 'loading' && <p>Loading tasks...</p>}
             {status === 'failed' && <p>Failed to load tasks</p>}
             {tasks.length > 0 ? (
                 tasks.map((task) => (
-                    <div key={task.id}>
-                        <h4>{task.title}</h4>
-                        <p>Priority: {task.priority}</p>
-                        <p>Description: {task.description}</p>
-                    </div>
+                    <Link to={`/tasks/${task.id}`} key={task.id} className='list-task'>
+                        <h4 className='task-field'>{task.title}</h4>
+                        <label className='task-field'>Priority: {task.priority}</label>
+                        <label className='task-field'>Description: {task.description}</label>
+                    </Link>
                 ))
             ) : (
                 <p>No tasks available</p>

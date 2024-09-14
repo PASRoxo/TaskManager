@@ -1,0 +1,50 @@
+.ToDoList {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.add-task-button {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 2px dashed #83c358; 
+    border-radius: 7px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+    transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.plus-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.list-task {
+    text-decoration: none;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.list-task:hover {
+    box-shadow: 0 5px 13px rgba(0, 0, 0, 0.5);
+}
+
+.task-field {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 10px;
+}
+
