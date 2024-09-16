@@ -26,7 +26,7 @@ function TasksList() {
                 To Do List
             </h2>
 
-            <Link to={'/taskForm'} className='add-task-button'>
+            <Link to={'/newTask'} className='add-task-button'>
                 <span className="plus-icon">+</span> Add New Task
             </Link>
 

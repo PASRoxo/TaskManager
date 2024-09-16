@@ -1,4 +1,5 @@
-.ToDoList {
+/***************** List *****************/
+.ToDoList, .TaskForm {
     width: 100%;
     margin: 0 auto;
     padding: 20px;
@@ -48,3 +49,32 @@
     margin-top: 10px;
 }
 
+/***************** Form *****************/
+.TaskForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #b6b6b6;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: #2487f0;
+    outline: none;
+}
