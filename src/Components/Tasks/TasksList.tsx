@@ -37,7 +37,10 @@ function TasksList() {
                     <Link to={`/tasks/${task.id}`} key={task.id} className='list-task'>
                         <h4 className='task-field'>{task.title}</h4>
                         <label className='task-field'>Priority: {task.priority}</label>
-                        <label className='task-field'>Description: {task.description}</label>
+                        <div className='task-actions'>
+                            <Link to={`/editTask/${task.id}`} className="task-bttn bi bi-pencil-square btn btn-primary" />
+                            <button className="task-bttn bi bi-trash BsTrashFill btn btn-danger" />
+                        </div>
                     </Link>
                 ))
             ) : (

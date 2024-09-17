@@ -7,6 +7,7 @@ import ErrorPage from './Components/Navigation/ErrorPage';
 import Dashboard from './Components/Dashboard';
 import TasksList from './Components/Tasks/TasksList';
 import TaskForm from './Components/Tasks/TaskForm';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const router = createBrowserRouter([
@@ -24,11 +25,15 @@ const router = createBrowserRouter([
         element: <TasksList />,
       },
       {
+        path: '/newTask',
+        element: <TaskForm />,
+      },
+      {
         path: '/tasks/:id',
         element: <TaskForm />,
       },
       {
-        path: '/newTask',
+        path: '/editTask/:id',
         element: <TaskForm />,
       },
     ]
