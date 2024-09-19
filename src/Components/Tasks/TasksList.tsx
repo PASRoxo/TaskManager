@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { fetchApiTasks, Task } from '../../Features/tasksSlice';
+import { deleteTask, fetchApiTasks, Task } from '../../Features/tasksSlice';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function TasksList() {
     const dispatch = useDispatch();
@@ -18,6 +19,15 @@ function TasksList() {
     useEffect(() => {
         thunkDispatch(fetchApiTasks());
     }, [dispatch]);
+
+    const handleDelete = (e: React.MouseEvent, id: number) => {
+        e.preventDefault()
+        axios
+            .delete("http://localhost:3000/tasks/" + id)
+            .then(() => {
+                dispatch(deleteTask(id))
+            })
+    }
 
     return (
         <div className='ToDoList'>
@@ -39,7 +49,7 @@ function TasksList() {
                         <label className='task-field'>Priority: {task.priority}</label>
                         <div className='task-actions'>
                             <Link to={`/editTask/${task.id}`} className="task-bttn bi bi-pencil-square btn btn-primary" />
-                            <button className="task-bttn bi bi-trash BsTrashFill btn btn-danger" />
+                            <button onClick={(e) => handleDelete(e, task.id)} className="task-bttn bi bi-trash BsTrashFill btn btn-danger" />
                         </div>
                     </Link>
                 ))
