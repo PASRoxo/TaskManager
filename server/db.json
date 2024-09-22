@@ -3,8 +3,31 @@
     {
       "id": 1,
       "title": "Task 23",
+      "type": "simple_task",
       "priority": "medium",
       "description": "Task 2 Description edited"
+    }
+  ],
+  "task_types": [
+    {
+      "id": "simple_task",
+      "fields": ["title", "description", "priority"]
+    },
+    {
+      "id": "project",
+      "fields": ["title", "description", "start_date", "end_date"]
+    },
+    {
+      "id": "meeting",
+      "fields": ["title", "description", "date_time", "duration"]
+    },
+    {
+      "id": "follow_up_task",
+      "fields": ["title", "description", "meeting"]
+    },
+    {
+      "id": "routine",
+      "fields": ["title", "description", "date_time", "frequency"]
     }
   ]
 }

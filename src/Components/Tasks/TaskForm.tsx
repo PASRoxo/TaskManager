@@ -1,9 +1,10 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { addTask, editTask, Task } from "../../Features/tasksSlice";
+import { addTask, editTask, Task, TaskType } from "../../Features/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import TaskTypeModal from "./TaskTypeModal";
 
 function TasksForm() {
     const { id } = useParams();
@@ -11,14 +12,19 @@ function TasksForm() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
+    const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
 
     const task = id ? tasks.find(task => task.id === Number(id)) : null;
 
     const isDisabled = !(location.pathname === '/newTask' || location.pathname.startsWith('/editTask'));
 
+    const [taskType, setTaskType] = useState('')
+
     const [title, setTitle] = useState('');
     const [priority, setPriority] = useState('');
     const [description, setDescription] = useState('');
+
+    const selectedType = taskTypes.find(type => type.id === task?.type || type.id === taskType)
 
     useEffect(() => {
         if (task) {
@@ -49,6 +55,7 @@ function TasksForm() {
                     const newTask = {
                         id: 0,
                         title: title,
+                        type: selectedType?.id || "",       //***********just to be able to test
                         priority: priority,
                         description: description,
                     };
@@ -61,6 +68,7 @@ function TasksForm() {
                     const editedTask = {
                         id: Number(id),
                         title: title,
+                        type: selectedType?.id || "",       //***********just to be able to test
                         priority: priority,
                         description: description,
                     };
@@ -81,56 +89,64 @@ function TasksForm() {
 
     return (
         <div className='TaskForm'>
-            {location.pathname === '/newTask' ? (
-                <div>
-                    <h2>New Task</h2>
-                </div>
-            ) : id ? (
-                <div>
-                    <h2>{task?.title}</h2>
-                </div>
-            ) : (
-                <div>Invalid Route</div>
+            <h2>
+                {location.pathname === '/newTask' ? 'New Task' : id ? task?.title : 'Invalid Route'}
+            </h2>
+
+            {(location.pathname === '/newTask') && (
+                <TaskTypeModal
+                    taskType={taskType}
+                    setTaskType={setTaskType}
+                    taskTypes={taskTypes}
+                />
             )}
+
             <form onSubmit={handleSubmit}>
-                <div className='form-group'>
-                    <label className="form-label">Title</label>
-                    <input
-                        name="titleInput"
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        className="form-control"
-                        type="text"
-                        disabled={isDisabled}
-                    />
-                </div>
 
-                <div className='form-group'>
-                    <label className="form-label">Priority</label>
-                    <select
-                        name="prioritySelect"
-                        value={priority}
-                        onChange={(e => setPriority(e.target.value))}
-                        className="form-select"
-                        required>
-                        <option value="" disabled>choose one...</option>
-                        <option value={"high"}>High</option>
-                        <option value={"medium"}>Medium</option>
-                        <option value={"low"}>Low</option>
-                    </select>
-                </div>
+                {selectedType?.fields.includes("title") && (
+                    <div className='form-group'>
+                        <label className="form-label">Title</label>
+                        <input
+                            name="titleInput"
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                            className="form-control"
+                            type="text"
+                            disabled={isDisabled}
+                        />
+                    </div>
+                )}
 
-                <div className='form-group'>
-                    <label className="form-label">Description</label>
-                    <textarea
-                        name="descriptionInput"
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                        rows={5}
-                        className="form-control"
-                        disabled={isDisabled}
-                    />
-                </div>
+                {selectedType?.fields.includes("priority") && (
+                    <div className='form-group'>
+                        <label className="form-label">Priority</label>
+                        <select
+                            name="prioritySelect"
+                            value={priority}
+                            onChange={(e => setPriority(e.target.value))}
+                            className="form-select"
+                            required>
+                            <option value="" disabled>choose one...</option>
+                            <option value={"high"}>High</option>
+                            <option value={"medium"}>Medium</option>
+                            <option value={"low"}>Low</option>
+                        </select>
+                    </div>
+                )}
+
+                {selectedType?.fields.includes("description") && (
+                    <div className='form-group'>
+                        <label className="form-label">Description</label>
+                        <textarea
+                            name="descriptionInput"
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            rows={5}
+                            className="form-control"
+                            disabled={isDisabled}
+                        />
+                    </div>
+                )}
 
                 <div className="submit-bttn ">
                     <button type="submit" className="btn btn-primary">
@@ -139,6 +155,8 @@ function TasksForm() {
                 </div>
 
             </form>
+
+
         </div>
     )
 }

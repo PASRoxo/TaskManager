@@ -4,32 +4,45 @@ import axios from "axios";
 
 const baseUrl = "http://localhost:3000/"
 
-const fetchData = async () => {
-    const response = await axios.get(baseUrl + "tasks");
+const fetchData = async (url: string) => {
+    const response = await axios.get(baseUrl + url);
     return response.data;
 };
 
-export const fetchApiTasks = createAsyncThunk("tasks/fetchData", async () => {
-    const tasks = await fetchData();
-    return tasks;
+export const fetchApiTaskTypes = createAsyncThunk("task_types/fetchData", async () => {
+    const taskTypes = await fetchData('task_types');
+    return taskTypes;
 });
 
-interface tasksState {
-    status: 'idle' | 'loading' | 'success' | 'failed';
-    tasks: Task[];
-    error: null
-}
+export const fetchApiTasks = createAsyncThunk("tasks/fetchData", async () => {
+    const tasks = await fetchData('tasks');
+    return tasks;
+});
 
 export interface Task {
     id: number;
     title: string;
+    type: string;
     priority: string;
     description: string;
+}
+
+export interface TaskType {
+    id: string;
+    fields: string[];
+}
+
+interface tasksState {
+    status: 'idle' | 'loading' | 'success' | 'failed';
+    tasks: Task[];
+    taskTypes: TaskType[];
+    error: null
 }
 
 const initialTasksState: tasksState = {
     status: 'idle',
     tasks: [],
+    taskTypes: [],
     error: null
 };
 
@@ -55,6 +68,7 @@ export const tasksSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            //////////// Tasks ////////////
             .addCase(fetchApiTasks.pending, (state) => {
                 state.status = "loading";
             })
@@ -63,6 +77,19 @@ export const tasksSlice = createSlice({
                 state.tasks = action.payload;
             })
             .addCase(fetchApiTasks.rejected, (state) => {
+                state.status = "failed";
+            })
+
+
+            //////////// Task Types ////////////
+            .addCase(fetchApiTaskTypes.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(fetchApiTaskTypes.fulfilled, (state, action) => {
+                state.status = "success";
+                state.taskTypes = action.payload;
+            })
+            .addCase(fetchApiTaskTypes.rejected, (state) => {
                 state.status = "failed";
             });
     },

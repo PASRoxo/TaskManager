@@ -1,24 +1,16 @@
 import './Tasks.css';
 import { RootState } from '../../store';
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { deleteTask, fetchApiTasks, Task } from '../../Features/tasksSlice';
+import { deleteTask, Task } from '../../Features/tasksSlice';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function TasksList() {
     const dispatch = useDispatch();
-    const thunkDispatch = useDispatch<ThunkDispatch<any, void, Action>>();
 
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
     const status = useSelector((state: RootState) => state.tasksSlice.status);
     const error = useSelector((state: RootState) => state.tasksSlice.error);
-
-    useEffect(() => {
-        thunkDispatch(fetchApiTasks());
-    }, [dispatch]);
 
     const handleDelete = (e: React.MouseEvent, id: number) => {
         e.preventDefault()

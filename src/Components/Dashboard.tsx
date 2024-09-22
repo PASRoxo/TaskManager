@@ -1,14 +1,26 @@
 import '../App.css';
 import { Link } from 'react-router-dom';
 import { DashboardMenu } from './Menus';
+import { useEffect } from 'react';
+import { fetchApiTasks, fetchApiTaskTypes } from '../Features/tasksSlice';
+import { useDispatch } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 function Dashboard() {
+    const dispatch = useDispatch();
+    const thunkDispatch = useDispatch<ThunkDispatch<any, void, Action>>();
+
+    useEffect(() => {
+        thunkDispatch(fetchApiTasks());
+        thunkDispatch(fetchApiTaskTypes());
+    }, [dispatch]);
+
     return (
         <div className='Dashboard'>
             <div>
                 <h2>Dashboard</h2>
             </div>
-
 
             <h4>Shortcut Menu <i className="bi bi-grid-3x3" /></h4>
             <div className="card-container">
