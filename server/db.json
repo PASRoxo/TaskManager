@@ -29,5 +29,13 @@
       "id": "routine",
       "fields": ["title", "description", "date_time", "frequency"]
     }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Work",
+      "colorCode": "#222222",
+      "description": "Work tasks"
+    }
   ]
 }
