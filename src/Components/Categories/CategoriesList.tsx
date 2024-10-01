@@ -22,10 +22,10 @@ function CategoriesList() {
     }
 
     return (
-        <div className='ToDoList'>
+        <div className='CategoriesList'>
 
-            <h2 id='toDoList-title'>
-                To Do List
+            <h2 id='categoriesList-title'>
+                Categories List
             </h2>
 
             <Link to={'/newCategory'} className='add-category-button'>
@@ -38,7 +38,7 @@ function CategoriesList() {
                 categories.map((category) => (
                     <Link to={`/categories/${category.id}`} key={category.id} className='list-category'>
                         <h4 className='category-field'>{category.name}</h4>
-                        <label className='category-field'>Priority: {category.colorCode}</label>
+                        <label className='category-field'>Color Code: {category.colorCode}</label>
                         <div className='category-actions'>
                             <Link to={`/editCategory/${category.id}`} className="category-bttn bi bi-pencil-square btn btn-primary" />
                             <button onClick={(e) => handleDelete(e, category.id)} className="category-bttn bi bi-trash BsTrashFill btn btn-danger" />

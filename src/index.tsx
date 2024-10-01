@@ -9,6 +9,8 @@ import TasksList from './Components/Tasks/TasksList';
 import TaskForm from './Components/Tasks/TaskForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import CategoriesList from './Components/Categories/CategoriesList';
+import CategoryForm from './Components/Categories/CategoryForm';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,22 @@ const router = createBrowserRouter([
       {
         path: '/editTask/:id',
         element: <TaskForm />,
+      },
+      {
+        path: '/categories',
+        element: <CategoriesList />,
+      },
+      {
+        path: '/newCategory',
+        element: <CategoryForm />,
+      },
+      {
+        path: '/categories/:id',
+        element: <CategoryForm />,
+      },
+      {
+        path: '/editCategory/:id',
+        element: <CategoryForm />,
       },
     ]
   },

@@ -2,10 +2,11 @@ import '../App.css';
 import { Link } from 'react-router-dom';
 import { DashboardMenu } from './Menus';
 import { useEffect } from 'react';
-import { fetchApiTasks, fetchApiTaskTypes } from '../Features/tasksSlice';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { fetchApiTasks, fetchApiTaskTypes } from '../Features/tasksSlice';
+import { fetchApiCategories } from '../Features/categoriesSlice';
 
 function Dashboard() {
     const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function Dashboard() {
     useEffect(() => {
         thunkDispatch(fetchApiTasks());
         thunkDispatch(fetchApiTaskTypes());
+        thunkDispatch(fetchApiCategories());
     }, [dispatch]);
 
     return (

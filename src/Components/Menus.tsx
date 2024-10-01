@@ -22,4 +22,9 @@ export const SidebarMenu = [
         title: 'Tasks',
         icon: <i className='bi bi-card-list' />
     },
+    {
+        path: '/categories',
+        title: 'Categories',
+        icon: <i className="bi bi-tag"></i>
+    },
 ]

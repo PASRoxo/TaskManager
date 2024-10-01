@@ -11,31 +11,60 @@
   "task_types": [
     {
       "id": "simple_task",
-      "fields": ["title", "description", "priority"]
+      "fields": [
+        "title",
+        "description",
+        "priority"
+      ]
     },
     {
       "id": "project",
-      "fields": ["title", "description", "start_date", "end_date"]
+      "fields": [
+        "title",
+        "description",
+        "start_date",
+        "end_date"
+      ]
     },
     {
       "id": "meeting",
-      "fields": ["title", "description", "date_time", "duration"]
+      "fields": [
+        "title",
+        "description",
+        "date_time",
+        "duration"
+      ]
     },
     {
       "id": "follow_up_task",
-      "fields": ["title", "description", "meeting"]
+      "fields": [
+        "title",
+        "description",
+        "meeting"
+      ]
     },
     {
       "id": "routine",
-      "fields": ["title", "description", "date_time", "frequency"]
+      "fields": [
+        "title",
+        "description",
+        "date_time",
+        "frequency"
+      ]
     }
   ],
   "categories": [
     {
       "id": 1,
       "name": "Work",
-      "colorCode": "#222222",
+      "colorCode": "#0118fa",
       "description": "Work tasks"
+    },
+    {
+      "id": 2,
+      "name": "New",
+      "colorCode": "#177af3",
+      "description": "Test"
     }
   ]
 }

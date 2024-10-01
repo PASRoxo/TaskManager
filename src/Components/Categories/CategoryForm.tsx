@@ -4,6 +4,7 @@ import { RootState } from "../../store";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { addCategory, Category, editCategory } from "../../Features/categoriesSlice";
+import { SketchPicker } from 'react-color'
 
 function CategoriesForm() {
     const { id } = useParams();
@@ -17,7 +18,7 @@ function CategoriesForm() {
     const isDisabled = !(location.pathname === '/newCategory' || location.pathname.startsWith('/editCategory'));
 
     const [name, setName] = useState('');
-    const [colorCode, setColorCode] = useState('');
+    const [colorCode, setColorCode] = useState('#f0f0f0');
     const [description, setDescription] = useState('');
 
     useEffect(() => {
@@ -43,9 +44,9 @@ function CategoriesForm() {
 
         if (formInputs.name.trim() === "" || formInputs.colorCode.trim() === "" || formInputs.description.trim() === "") {
             alert("All fields must be filled")
-        } else if (location.pathname === '/newTask' || location.pathname.startsWith('/editTask')) {
+        } else if (location.pathname === '/newCategory' || location.pathname.startsWith('/editCategory')) {
             try {
-                if (location.pathname === '/newTask') {
+                if (location.pathname === '/newCategory') {
                     const newCategory = {
                         id: 0,
                         name: name,
@@ -79,6 +80,10 @@ function CategoriesForm() {
         }
     };
 
+    const handleColor = (colorPicked: any) => {
+        setColorCode(colorPicked.hex)
+    }
+
     return (
         <div className='TaskForm'>
             <h2>
@@ -99,20 +104,12 @@ function CategoriesForm() {
                     />
                 </div>
 
-                {/* Implement later (color picker) */}
                 <div className='form-group'>
                     <label className="form-label">Color Code</label>
-                    <select
-                        name="prioritySelect"
-                        value={colorCode}
-                        onChange={(e => setColorCode(e.target.value))}
-                        className="form-select"
-                        required>
-                        <option value="" disabled>choose one...</option>
-                        <option value={"high"}>High</option>
-                        <option value={"medium"}>Medium</option>
-                        <option value={"low"}>Low</option>
-                    </select>
+                    <SketchPicker 
+                    color={colorCode}
+                    onChange={handleColor}
+                    />
                 </div>
 
                 <div className='form-group'>
