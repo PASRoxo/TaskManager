@@ -14,7 +14,7 @@ function TaskTypeModal({ taskTypes, taskType, setTaskType }: any) {
                 <option value="" disabled>choose one...</option>
                 {taskTypes.map((type: any) => (
                     <option key={type.id} value={type.id}>
-                        {type.id}
+                        {type.display}
                     </option>
                 ))}
             </select>

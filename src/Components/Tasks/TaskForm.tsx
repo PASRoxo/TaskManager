@@ -3,8 +3,8 @@ import { addTask, editTask, Task, TaskType } from "../../Features/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import TaskTypeModal from "./TaskTypeModal";
+import { createData, updateData } from "../apiRequests";
 
 function TasksForm() {
     const { id } = useParams();
@@ -38,7 +38,7 @@ function TasksForm() {
         }
     }, [task]);
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         const formInputs = {
@@ -53,17 +53,16 @@ function TasksForm() {
             try {
                 if (location.pathname === '/newTask') {
                     const newTask = {
-                        id: 0,
+                        id: tasks.length + 1,
                         title: title,
                         type: selectedType?.id || "",       //***********just to be able to test
                         priority: priority,
                         description: description,
                     };
-                    axios
-                        .post("http://localhost:3000/tasks", newTask)
-                        .then(() => {
-                            dispatch(addTask(newTask));
-                        })
+
+                    await createData('tasks', newTask);
+                    dispatch(addTask(newTask));
+
                 } else {
                     const editedTask = {
                         id: Number(id),
@@ -72,11 +71,10 @@ function TasksForm() {
                         priority: priority,
                         description: description,
                     };
-                    axios
-                        .put(`http://localhost:3000/tasks/${id}`, editedTask)
-                        .then(() => {
-                            dispatch(editTask(editedTask));
-                        })
+
+                    await updateData(`tasks/${id}`, editedTask);
+                    dispatch(editTask(editedTask));
+
                 }
                 navigate(-1)
             } catch (error) {

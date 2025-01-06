@@ -5,14 +5,15 @@ import { SidebarMenu } from '../Menus';
 function Sidebar({ sidebar, showSidebar }: any) {
 
     return (
-        <div className='Sidebar'>
-            {!sidebar && (
-                <Link to='#' className='menu-int'>
-                    <div className="bi bi-list" onClick={showSidebar} />
-                </Link>
-            )}
-
-            <nav className={sidebar ? "sidebar-menu active" : "sidebar-menu"}>
+        <>
+            <div className='Header'>
+                {!sidebar && (
+                    <Link to='#' className='menu-int'>
+                        <div className="bi bi-list" onClick={showSidebar} />
+                    </Link>
+                )}
+            </div>
+            <nav className={sidebar ? "Sidebar active" : "Sidebar"}>
                 <ul className='sidebar-items' >
                     <li className='sidebar-toggle'>
                         {sidebar && (
@@ -34,7 +35,7 @@ function Sidebar({ sidebar, showSidebar }: any) {
                     })}
                 </ul>
             </nav>
-        </div>
+        </>
 
     )
 }

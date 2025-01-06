@@ -1,12 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const baseUrl = "http://localhost:3000/"
-
-const fetchData = async (url: string) => {
-    const response = await axios.get(baseUrl + url);
-    return response.data;
-};
+import { fetchData } from "../Components/apiRequests";
 
 export const fetchApiTaskTypes = createAsyncThunk("task_types/fetchData", async () => {
     const taskTypes = await fetchData('task_types');
@@ -28,6 +21,7 @@ export interface Task {
 
 export interface TaskType {
     id: string;
+    display: string;
     fields: string[];
 }
 

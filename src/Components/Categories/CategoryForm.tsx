@@ -2,9 +2,9 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { addCategory, Category, editCategory } from "../../Features/categoriesSlice";
 import { SketchPicker } from 'react-color'
+import { createData, updateData } from "../apiRequests";
 
 function CategoriesForm() {
     const { id } = useParams();
@@ -33,7 +33,7 @@ function CategoriesForm() {
         }
     }, [category]);
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         const formInputs = {
@@ -48,16 +48,15 @@ function CategoriesForm() {
             try {
                 if (location.pathname === '/newCategory') {
                     const newCategory = {
-                        id: 0,
+                        id: categories.length + 1,
                         name: name,
                         colorCode: colorCode,
                         description: description,
                     };
-                    axios
-                        .post("http://localhost:3000/categories", newCategory)
-                        .then(() => {
-                            dispatch(addCategory(newCategory));
-                        })
+
+                    await createData('categories', newCategory);
+                    dispatch(addCategory(newCategory));
+
                 } else {
                     const editedCategory = {
                         id: Number(id),
@@ -65,11 +64,9 @@ function CategoriesForm() {
                         colorCode: colorCode,
                         description: description,
                     };
-                    axios
-                        .put(`http://localhost:3000/categories/${id}`, editedCategory)
-                        .then(() => {
-                            dispatch(editCategory(editedCategory));
-                        })
+
+                    await updateData(`categories/${id}`, editedCategory);
+                    dispatch(editCategory(editedCategory));
                 }
                 navigate(-1)
             } catch (error) {
@@ -106,9 +103,9 @@ function CategoriesForm() {
 
                 <div className='form-group'>
                     <label className="form-label">Color Code</label>
-                    <SketchPicker 
-                    color={colorCode}
-                    onChange={handleColor}
+                    <SketchPicker
+                        color={colorCode}
+                        onChange={handleColor}
                     />
                 </div>
 

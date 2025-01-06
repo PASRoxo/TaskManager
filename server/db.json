@@ -11,6 +11,7 @@
   "task_types": [
     {
       "id": "simple_task",
+      "display": "Simple Task",
       "fields": [
         "title",
         "description",
@@ -19,6 +20,7 @@
     },
     {
       "id": "project",
+      "display": "Project",
       "fields": [
         "title",
         "description",
@@ -28,6 +30,7 @@
     },
     {
       "id": "meeting",
+      "display": "Meeting",
       "fields": [
         "title",
         "description",
@@ -37,6 +40,7 @@
     },
     {
       "id": "follow_up_task",
+      "display": "Follow Up Task",
       "fields": [
         "title",
         "description",
@@ -45,6 +49,7 @@
     },
     {
       "id": "routine",
+      "display": "Routine",
       "fields": [
         "title",
         "description",
@@ -59,12 +64,6 @@
       "name": "Work",
       "colorCode": "#0118fa",
       "description": "Work tasks"
-    },
-    {
-      "id": 2,
-      "name": "New",
-      "colorCode": "#177af3",
-      "description": "Test"
     }
   ]
 }

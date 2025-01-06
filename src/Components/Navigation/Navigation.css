@@ -1,5 +1,5 @@
-/***************** Sidebar *****************/
-.Sidebar {
+/***************** Header *****************/
+.Header {
   background-color: #ffffff;
   height: 80px;
   display: flex;
@@ -7,6 +7,7 @@
   align-items: center;
 }
 
+/***************** Sidebar *****************/
 .menu-int {
   position: fixed;
   top: 20px;
@@ -16,11 +17,11 @@
   color: #222222;
 }
 
-.sidebar-menu.active .menu-int {
+.Sidebar.active .menu-int {
   color: #ededed;
 }
 
-.sidebar-menu {
+.Sidebar {
   background-color: #05375a;
   width: 250px;
   height: 100vh;
@@ -32,7 +33,7 @@
   transition: 450ms;
 }
 
-.sidebar-menu.active {
+.Sidebar.active {
   left: 0;
   transition: 450ms;
 }
@@ -62,7 +63,7 @@
 }
 
 .sidebar-items {
-  padding-top: 50px;
+  padding-top: 80px;
   width: 100%;
   list-style: none;
 }

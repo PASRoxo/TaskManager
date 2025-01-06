@@ -3,7 +3,7 @@ import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTask, Task } from '../../Features/tasksSlice';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { deleteData } from '../apiRequests';
 
 function TasksList() {
     const dispatch = useDispatch();
@@ -12,13 +12,11 @@ function TasksList() {
     const status = useSelector((state: RootState) => state.tasksSlice.status);
     const error = useSelector((state: RootState) => state.tasksSlice.error);
 
-    const handleDelete = (e: React.MouseEvent, id: number) => {
+    const handleDelete = async (e: React.MouseEvent, id: number) => {
         e.preventDefault()
-        axios
-            .delete("http://localhost:3000/tasks/" + id)
-            .then(() => {
-                dispatch(deleteTask(id))
-            })
+
+        await deleteData(`tasks/${id}`);
+        dispatch(deleteTask(id))
     }
 
     return (

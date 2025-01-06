@@ -3,7 +3,7 @@ import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteCategory, Category } from '../../Features/categoriesSlice';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { deleteData } from '../apiRequests';
 
 function CategoriesList() {
     const dispatch = useDispatch();
@@ -12,15 +12,14 @@ function CategoriesList() {
     const status = useSelector((state: RootState) => state.categoriesSlice.status);
     const error = useSelector((state: RootState) => state.categoriesSlice.error);
 
-    const handleDelete = (e: React.MouseEvent, id: number) => {
+    const handleDelete = async (e: React.MouseEvent, id: number) => {
         e.preventDefault()
-        axios
-            .delete("http://localhost:3000/categories/" + id)
-            .then(() => {
-                dispatch(deleteCategory(id))
-            })
+
+        await deleteData(`categories/${id}`);
+        dispatch(deleteCategory(id))
     }
 
+    console.log(categories)
     return (
         <div className='CategoriesList'>
 
