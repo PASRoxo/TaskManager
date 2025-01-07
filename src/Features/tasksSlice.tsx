@@ -12,17 +12,19 @@ export const fetchApiTasks = createAsyncThunk("tasks/fetchData", async () => {
 });
 
 export interface Task {
-    id: number;
+    id: string;
     title: string;
+    category?: string;
     type: string;
-    priority: string;
-    description: string;
+    priority?: string;
+    description?: string;
 }
 
 export interface TaskType {
     id: string;
     display: string;
     fields: string[];
+    required: string[];
 }
 
 interface tasksState {
@@ -55,7 +57,7 @@ export const tasksSlice = createSlice({
             state.tasks = updatedTasks
         },
 
-        deleteTask: (state, action: PayloadAction<number>) => {
+        deleteTask: (state, action: PayloadAction<string>) => {
             state.tasks = state.tasks.filter(task => task.id !== action.payload);
         },
     },

@@ -12,7 +12,7 @@ function TasksList() {
     const status = useSelector((state: RootState) => state.tasksSlice.status);
     const error = useSelector((state: RootState) => state.tasksSlice.error);
 
-    const handleDelete = async (e: React.MouseEvent, id: number) => {
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
         e.preventDefault()
 
         await deleteData(`tasks/${id}`);

@@ -1,7 +1,7 @@
 {
   "tasks": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Task 23",
       "type": "simple_task",
       "priority": "medium",
@@ -16,6 +16,11 @@
         "title",
         "description",
         "priority"
+      ],
+      "required": [
+        "title",
+        "description",
+        "priority"
       ]
     },
     {
@@ -26,6 +31,10 @@
         "description",
         "start_date",
         "end_date"
+      ],
+      "required": [
+        "title",
+        "description"
       ]
     },
     {
@@ -36,6 +45,11 @@
         "description",
         "date_time",
         "duration"
+      ],
+      "required": [
+        "title",
+        "description",
+        "date_time"
       ]
     },
     {
@@ -45,22 +59,17 @@
         "title",
         "description",
         "meeting"
-      ]
-    },
-    {
-      "id": "routine",
-      "display": "Routine",
-      "fields": [
+      ],
+      "required": [
         "title",
         "description",
-        "date_time",
-        "frequency"
+        "meeting"
       ]
     }
   ],
   "categories": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Work",
       "colorCode": "#0118fa",
       "description": "Work tasks"

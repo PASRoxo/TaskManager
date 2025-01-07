@@ -12,7 +12,7 @@ function CategoriesList() {
     const status = useSelector((state: RootState) => state.categoriesSlice.status);
     const error = useSelector((state: RootState) => state.categoriesSlice.error);
 
-    const handleDelete = async (e: React.MouseEvent, id: number) => {
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
         e.preventDefault()
 
         await deleteData(`categories/${id}`);

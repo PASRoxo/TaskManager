@@ -5,6 +5,7 @@ import { RootState } from "../../store";
 import { useEffect, useState } from "react";
 import TaskTypeModal from "./TaskTypeModal";
 import { createData, updateData } from "../apiRequests";
+import { v4 as uuidv4 } from 'uuid';
 
 function TasksForm() {
     const { id } = useParams();
@@ -14,21 +15,23 @@ function TasksForm() {
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
     const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
 
-    const task = id ? tasks.find(task => task.id === Number(id)) : null;
+    const task = id ? tasks.find(task => task.id === id) : null;
 
     const isDisabled = !(location.pathname === '/newTask' || location.pathname.startsWith('/editTask'));
 
     const [taskType, setTaskType] = useState('')
 
     const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('');
     const [priority, setPriority] = useState('');
     const [description, setDescription] = useState('');
 
-    const selectedType = taskTypes.find(type => type.id === task?.type || type.id === taskType)
+    const selectedType = taskTypes.find(type => type.id === task?.type || type.id === taskType) as TaskType
 
     useEffect(() => {
         if (task) {
             setTitle(task.title || '');
+            setCategory(task.category || '');
             setPriority(task.priority || '');
             setDescription(task.description || '');
         } else {
@@ -41,21 +44,28 @@ function TasksForm() {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const formInputs = {
+        const formInputs: { [key: string]: string } = { //defaulted to the basic fields for now
             title: title,
             priority: priority,
             description: description,
         };
 
-        if (formInputs.priority.trim() === "" || formInputs.title.trim() === "" || formInputs.description.trim() === "") {
+        const { required: requiredFields } = selectedType;
+
+        const missingFields = requiredFields.filter(field => {
+            return !formInputs[field] || formInputs[field].trim() === "";
+        });
+
+        if (missingFields.length > 0) {
             alert("All fields must be filled")
         } else if (location.pathname === '/newTask' || location.pathname.startsWith('/editTask')) {
             try {
                 if (location.pathname === '/newTask') {
                     const newTask = {
-                        id: tasks.length + 1,
+                        id: uuidv4(),
+                        category: category,
                         title: title,
-                        type: selectedType?.id || "",       //***********just to be able to test
+                        type: selectedType?.id as string,
                         priority: priority,
                         description: description,
                     };
@@ -65,9 +75,10 @@ function TasksForm() {
 
                 } else {
                     const editedTask = {
-                        id: Number(id),
+                        id: id as string,
+                        category: category,
                         title: title,
-                        type: selectedType?.id || "",       //***********just to be able to test
+                        type: selectedType?.id as string,
                         priority: priority,
                         description: description,
                     };
@@ -76,12 +87,12 @@ function TasksForm() {
                     dispatch(editTask(editedTask));
 
                 }
-                navigate(-1)
+                navigate('/tasks')
             } catch (error) {
                 console.error('Error saving task:', error);
             }
         } else {
-            navigate(-1)
+            navigate('/tasks')
         }
     };
 
@@ -112,6 +123,21 @@ function TasksForm() {
                             type="text"
                             disabled={isDisabled}
                         />
+                    </div>
+                )}
+
+                {selectedType?.fields.includes("category") && (
+                    <div className='form-group'>
+                        <label className="form-label">Category</label>
+                        <select
+                            name="categorySelect"
+                            value={category}
+                            onChange={(e => setCategory(e.target.value))}
+                            className="form-select"
+                            required>
+                            <option value="" disabled>choose one...</option>
+
+                        </select>
                     </div>
                 )}
 
@@ -146,7 +172,7 @@ function TasksForm() {
                     </div>
                 )}
 
-                <div className="submit-bttn ">
+                <div className="submit-bttn">
                     <button type="submit" className="btn btn-primary">
                         {location.pathname === '/newTask' ? 'Create' : location.pathname.startsWith('/editTask') ? 'Update' : 'Back'}
                     </button>

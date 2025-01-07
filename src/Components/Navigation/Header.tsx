@@ -2,7 +2,7 @@ import './Navigation.css';
 
 function Header() {
     return (
-        <div></div>
+        <div className='Header'></div>
     )
 }
 

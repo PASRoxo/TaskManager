@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { addCategory, Category, editCategory } from "../../Features/categoriesSlice";
 import { SketchPicker } from 'react-color'
 import { createData, updateData } from "../apiRequests";
+import { v4 as uuidv4 } from 'uuid';
 
 function CategoriesForm() {
     const { id } = useParams();
@@ -13,7 +14,7 @@ function CategoriesForm() {
     const navigate = useNavigate();
     const categories: Category[] = useSelector((state: RootState) => state.categoriesSlice.categories);
 
-    const category = id ? categories.find(category => category.id === Number(id)) : null;
+    const category = id ? categories.find(category => category.id === id) : null;
 
     const isDisabled = !(location.pathname === '/newCategory' || location.pathname.startsWith('/editCategory'));
 
@@ -48,7 +49,7 @@ function CategoriesForm() {
             try {
                 if (location.pathname === '/newCategory') {
                     const newCategory = {
-                        id: categories.length + 1,
+                        id: uuidv4(),
                         name: name,
                         colorCode: colorCode,
                         description: description,
@@ -59,7 +60,7 @@ function CategoriesForm() {
 
                 } else {
                     const editedCategory = {
-                        id: Number(id),
+                        id: id as string,
                         name: name,
                         colorCode: colorCode,
                         description: description,
@@ -68,12 +69,12 @@ function CategoriesForm() {
                     await updateData(`categories/${id}`, editedCategory);
                     dispatch(editCategory(editedCategory));
                 }
-                navigate(-1)
+                navigate('/categories')
             } catch (error) {
                 console.error('Error saving category:', error);
             }
         } else {
-            navigate(-1)
+            navigate('/categories')
         }
     };
 

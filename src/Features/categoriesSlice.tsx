@@ -7,7 +7,7 @@ export const fetchApiCategories = createAsyncThunk("categories/fetchData", async
 });
 
 export interface Category {
-    id: number;
+    id: string;
     name: string;
     colorCode: string;
     description: string;
@@ -41,7 +41,7 @@ export const categoriesSlice = createSlice({
             state.categories = updatedCategories
         },
 
-        deleteCategory: (state, action: PayloadAction<number>) => {
+        deleteCategory: (state, action: PayloadAction<string>) => {
             state.categories = state.categories.filter(category => category.id !== action.payload);
         },
     },
