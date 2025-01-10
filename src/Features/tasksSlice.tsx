@@ -18,6 +18,8 @@ export interface Task {
     type: string;
     priority?: string;
     description?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export interface TaskType {

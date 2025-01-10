@@ -1,4 +1,4 @@
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
@@ -6,17 +6,20 @@ import { addCategory, Category, editCategory } from "../../Features/categoriesSl
 import { SketchPicker } from 'react-color'
 import { createData, updateData } from "../apiRequests";
 import { v4 as uuidv4 } from 'uuid';
+import { TextAreaField, TextInputField } from "../FormFields";
 
 function CategoriesForm() {
     const { id } = useParams();
-    const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
     const categories: Category[] = useSelector((state: RootState) => state.categoriesSlice.categories);
 
     const category = id ? categories.find(category => category.id === id) : null;
 
-    const isDisabled = !(location.pathname === '/newCategory' || location.pathname.startsWith('/editCategory'));
+    const isNewCategoryView = useMatch('/newCategory')
+    const isEditCategoryView = useMatch('/editCategory/:id')
+    const isDisabled = !(isNewCategoryView || isEditCategoryView);
 
     const [name, setName] = useState('');
     const [colorCode, setColorCode] = useState('#f0f0f0');
@@ -45,9 +48,9 @@ function CategoriesForm() {
 
         if (formInputs.name.trim() === "" || formInputs.colorCode.trim() === "" || formInputs.description.trim() === "") {
             alert("All fields must be filled")
-        } else if (location.pathname === '/newCategory' || location.pathname.startsWith('/editCategory')) {
+        } else if (isNewCategoryView || isEditCategoryView) {
             try {
-                if (location.pathname === '/newCategory') {
+                if (isNewCategoryView) {
                     const newCategory = {
                         id: uuidv4(),
                         name: name,
@@ -85,22 +88,18 @@ function CategoriesForm() {
     return (
         <div className='TaskForm'>
             <h2>
-                {location.pathname === '/newCategory' ? 'New Category' : id ? category?.name : 'Invalid Route'}
+                {isNewCategoryView ? 'New Category' : id ? category?.name : 'Invalid Route'}
             </h2>
 
             <form onSubmit={handleSubmit}>
-
-                <div className='form-group'>
-                    <label className="form-label">Name</label>
-                    <input
-                        name="nameInput"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        className="form-control"
-                        type="text"
-                        disabled={isDisabled}
-                    />
-                </div>
+                <TextInputField
+                    label="Name"
+                    name="nameInput"
+                    value={name}
+                    onChange={input => setName(input)}
+                    isDisabled={isDisabled}
+                    isRequired={true}
+                />
 
                 <div className='form-group'>
                     <label className="form-label">Color Code</label>
@@ -110,22 +109,19 @@ function CategoriesForm() {
                     />
                 </div>
 
-                <div className='form-group'>
-                    <label className="form-label">Description</label>
-                    <textarea
-                        name="descriptionInput"
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                        rows={5}
-                        className="form-control"
-                        disabled={isDisabled}
-                    />
-                </div>
-
+                <TextAreaField
+                    label="Description"
+                    name="descriptionInput"
+                    value={description}
+                    onChange={input => setDescription(input)}
+                    rows={5}
+                    isDisabled={isDisabled}
+                    isRequired={true}
+                />
 
                 <div className="submit-bttn ">
                     <button type="submit" className="btn btn-primary">
-                        {location.pathname === '/newCategory' ? 'Create' : location.pathname.startsWith('/editCategory') ? 'Update' : 'Back'}
+                        {isNewCategoryView ? 'Create' : isEditCategoryView ? 'Update' : 'Back'}
                     </button>
                 </div>
 
