@@ -21,9 +21,13 @@ interface DateInputFieldProps extends BaseFieldProps {
     minDate?: string;
 }
 
+interface TimeInputFieldProps extends BaseFieldProps { }
+
 export const TextInputField = ({ label, name, value, onChange, isDisabled, isRequired }: TextInputFieldProps) => (
     <div className="form-group">
-        <label className="form-label">{label}</label>
+        <label className="form-label">
+            {label} {isRequired && <label style={{ color: "red" }}> *</label>}
+        </label>
         <input
             name={name}
             value={value}
@@ -38,7 +42,9 @@ export const TextInputField = ({ label, name, value, onChange, isDisabled, isReq
 
 export const TextAreaField = ({ label, name, value, onChange, rows, isDisabled, isRequired }: TextAreaFieldProps) => (
     <div className='form-group'>
-        <label className="form-label">{label}</label>
+        <label className="form-label">
+            {label} {isRequired && <label style={{ color: "red" }}> *</label>}
+        </label>
         <textarea
             name={name}
             value={value}
@@ -54,7 +60,9 @@ export const TextAreaField = ({ label, name, value, onChange, rows, isDisabled, 
 
 export const SelectField = ({ label, name, value, onChange, options, isDisabled, isRequired }: SelectFieldProps) => (
     <div className="form-group">
-        <label className="form-label">{label}</label>
+        <label className="form-label">
+            {label} {isRequired && <label style={{ color: "red" }}> *</label>}
+        </label>
         <select
             name={name}
             value={value}
@@ -77,7 +85,9 @@ export const SelectField = ({ label, name, value, onChange, options, isDisabled,
 
 export const DateInputField = ({ label, name, value, onChange, isDisabled, isRequired, minDate }: DateInputFieldProps) => (
     <div className='form-group'>
-        <label className="form-label">{label}</label>
+        <label className="form-label">
+            {label} {isRequired && <label style={{ color: "red" }}> *</label>}
+        </label>
         <input
             name={name}
             value={value}
@@ -87,6 +97,23 @@ export const DateInputField = ({ label, name, value, onChange, isDisabled, isReq
             disabled={isDisabled}
             required={isRequired}
             min={minDate}
+        />
+    </div>
+);
+
+export const TimeInputField = ({ label, name, value, onChange, isDisabled, isRequired }: TimeInputFieldProps) => (
+    <div className="form-group">
+        <label className="form-label">
+            {label} {isRequired && <span style={{ color: "red" }}> *</span>}
+        </label>
+        <input
+            name={name}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="form-control"
+            type="time"
+            disabled={isDisabled}
+            required={isRequired}
         />
     </div>
 );

@@ -20,6 +20,9 @@ export interface Task {
     description?: string;
     startDate?: string;
     endDate?: string;
+    date?: string;
+    time?: string;
+    meeting?: string;
 }
 
 export interface TaskType {

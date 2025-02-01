@@ -1,11 +1,37 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Task 23",
+      "id": "f777ee46-385c-4254-80e5-ee69cd46d197",
       "type": "simple_task",
-      "priority": "medium",
-      "description": "Task 2 Description edited"
+      "title": "Simple Task",
+      "category": "1",
+      "description": "Simple Task description",
+      "priority": "medium"
+    },
+    {
+      "id": "f648200d-b76b-4e30-bc60-1beb7da8c921",
+      "type": "project",
+      "title": "Project",
+      "description": "Project description",
+      "priority": "low",
+      "startDate": "2025-02-20"
+    },
+    {
+      "id": "04dbacf1-f2ed-4754-bdb7-0e5effae1e47",
+      "type": "meeting",
+      "title": "Meeting",
+      "category": "1",
+      "description": "Meeting description",
+      "date": "2025-02-25",
+      "time": "16:30"
+    },
+    {
+      "id": "5d74517f-ab0c-41fc-b40f-1a414fcc2eaf",
+      "type": "follow_up_task",
+      "title": "Follow Up Task",
+      "category": "1",
+      "description": "Follow Up Task description",
+      "meeting": "04dbacf1-f2ed-4754-bdb7-0e5effae1e47"
     }
   ],
   "task_types": [
@@ -20,8 +46,7 @@
       ],
       "required": [
         "title",
-        "description",
-        "priority"
+        "description"
       ]
     },
     {
@@ -31,6 +56,7 @@
         "title",
         "category",
         "description",
+        "priority",
         "startDate",
         "endDate"
       ],

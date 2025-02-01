@@ -5,9 +5,10 @@ import { RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { createData, updateData } from "../apiRequests";
 import { v4 as uuidv4 } from 'uuid';
-import { DateInputField, SelectField, TextAreaField, TextInputField } from "../FormFields";
+import { DateInputField, SelectField, TextAreaField, TextInputField, TimeInputField } from "../FormFields";
 import { Category } from "../../Features/categoriesSlice";
-import { formatDateYYYYMMDD } from "../../functions";
+import { formatDateYYYYMMDD, isEmptyString } from "../../functions";
+import { FORM_ERRORS } from "../FormErrors";
 
 function TasksForm() {
     const { id } = useParams();
@@ -15,6 +16,8 @@ function TasksForm() {
     const navigate = useNavigate();
 
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
+    const meetings: Task[] = tasks.filter(task => task.type === 'meeting');
+
     const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
     const categories: Category[] = useSelector((state: RootState) => state.categoriesSlice.categories);
 
@@ -32,8 +35,36 @@ function TasksForm() {
     const [description, setDescription] = useState('');
     const [startDateInput, setStartDateInput] = useState('');
     const [endDateInput, setEndDateInput] = useState('');
+    const [timeInput, setTimeInput] = useState('');
+    const [meeting, setMeeting] = useState('');
+
+    const [formErrors, setFormErrors] = useState<string[]>([]);
 
     const selectedType = taskTypes.find(type => type.id === task?.type || type.id === taskType) as TaskType
+
+    const clearInputFields = () => {
+        setTitle('');
+        setCategory('');
+        setPriority('');
+        setDescription('');
+        setStartDateInput('');
+        setEndDateInput('');
+
+        setFormErrors([]);
+    }
+
+    const addFormError = (error: string) => {
+        setFormErrors((prevErrors) => {
+            if (!prevErrors.includes(error)) {
+                return [...prevErrors, error];
+            }
+            return prevErrors;
+        });
+    };
+
+    const removeFormError = (error: string) => {
+        setFormErrors((prevErrors) => prevErrors.filter(err => err !== error));
+    };
 
     useEffect(() => {
         if (task) {
@@ -41,66 +72,69 @@ function TasksForm() {
             setCategory(task.category || '');
             setPriority(task.priority || '');
             setDescription(task.description || '');
-            setStartDateInput(task.startDate || '');
+            setStartDateInput(task.startDate || task.date || '');
             setEndDateInput(task.endDate || '');
+            setTimeInput(task.time || '');
+            setMeeting(task.meeting || '');
         } else {
-            setTitle('');
-            setPriority('');
-            setDescription('');
-            setStartDateInput('');
-            setEndDateInput('');
+            clearInputFields();
         }
     }, [task]);
+
+    useEffect(() => {
+        if (!isEmptyString(endDateInput) && startDateInput > endDateInput && taskType !== 'meeting') {
+            addFormError(FORM_ERRORS.startDate_endDate);
+        } else if (formErrors.includes(FORM_ERRORS.startDate_endDate)) {
+            removeFormError(FORM_ERRORS.startDate_endDate)
+        }
+    }, [startDateInput, endDateInput]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const formInputs: { [key: string]: string } = {
-            title: title,
-            priority: priority,
-            description: description,
-            startDate: startDateInput,
-            endDate: endDateInput
-        };
+        if (formErrors.length > 0) {
+            alert(FORM_ERRORS.form_Errors_warn);
+            return;
+        }
 
+        const { fields: taskFields } = selectedType;
         const { required: requiredFields } = selectedType;
 
+        let formInputs: { [key: string]: string } = {};
+
+        taskFields.forEach(field => {
+            field === "title" && title && (formInputs.title = title);
+            field === "category" && category && (formInputs.category = category);
+            field === "priority" && priority && (formInputs.priority = priority);
+            field === "description" && description && (formInputs.description = description);
+            field === "startDate" && startDateInput && (formInputs.startDate = startDateInput);
+            field === "endDate" && endDateInput && (formInputs.endDate = endDateInput);
+            field === "date" && startDateInput && (formInputs.date = startDateInput);
+            field === "time" && timeInput && (formInputs.time = timeInput);
+            field === "meeting" && meeting && (formInputs.meeting = meeting);
+        });
+
         const missingFields = requiredFields.filter(field => {
-            return !formInputs[field] || formInputs[field].trim() === "";
+            return !formInputs[field] || isEmptyString(formInputs[field]);
         });
 
         if (missingFields.length > 0) {
             alert("All fields must be filled")
         } else if (isNewTaskView || isEditTaskView) {
             try {
+                const taskToSave: Task = {
+                    id: isNewTaskView ? uuidv4() : id as string,
+                    type: selectedType?.id as string,
+                    title: title,
+                    ...formInputs,
+                };
                 if (isNewTaskView) {
-                    const newTask = {
-                        id: uuidv4(),
-                        category: category,
-                        title: title,
-                        type: selectedType?.id as string,
-                        priority: priority,
-                        description: description,
-                        startDate: startDateInput,
-                        endDate: endDateInput
-                    };
-
-                    await createData('tasks', newTask);
-                    dispatch(addTask(newTask));
+                    await createData('tasks', taskToSave);
+                    dispatch(addTask(taskToSave));
 
                 } else {
-                    const editedTask = {
-                        id: id as string,
-                        category: category,
-                        title: title,
-                        type: selectedType?.id as string,
-                        priority: priority,
-                        description: description,
-                    };
-
-                    await updateData(`tasks/${id}`, editedTask);
-                    dispatch(editTask(editedTask));
-
+                    await updateData(`tasks/${id}`, taskToSave);
+                    dispatch(editTask(taskToSave));
                 }
                 navigate('/tasks')
             } catch (error) {
@@ -110,6 +144,12 @@ function TasksForm() {
             navigate('/tasks')
         }
     };
+
+    const handleTaskTypeSelection = (selectedOption: string) => {
+        setTaskType(selectedOption);
+
+        clearInputFields();
+    }
 
     const isFieldRequired = (field: string) => {
         return selectedType.required.includes(field)
@@ -126,7 +166,7 @@ function TasksForm() {
                     label="Task Type"
                     name="taskTypeSelect"
                     value={taskType}
-                    onChange={selectedOption => setTaskType(selectedOption)}
+                    onChange={handleTaskTypeSelection}
                     options={taskTypes.map((type: any) => ({
                         value: type.id,
                         label: type.display,
@@ -196,7 +236,7 @@ function TasksForm() {
                         {selectedType?.fields.includes("startDate") && (
                             <DateInputField
                                 label="Start Date"
-                                name={"startDateInput"}
+                                name="startDateInput"
                                 value={startDateInput}
                                 onChange={(value) => setStartDateInput(formatDateYYYYMMDD(new Date(value)))}
                                 isDisabled={isDisabled}
@@ -209,7 +249,7 @@ function TasksForm() {
                         {selectedType?.fields.includes("endDate") && (
                             <DateInputField
                                 label="End Date"
-                                name={"endDateInput"}
+                                name="endDateInput"
                                 value={endDateInput}
                                 onChange={(value) => setEndDateInput(formatDateYYYYMMDD(new Date(value)))}
                                 isDisabled={isDisabled}
@@ -220,10 +260,69 @@ function TasksForm() {
                     </div>
                 </div>
 
-                <div className="submit-bttn">
-                    <button type="submit" className="btn btn-primary">
-                        {isNewTaskView ? 'Create' : isEditTaskView ? 'Update' : 'Back'}
-                    </button>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div style={{ flex: '1' }}>
+                        {selectedType?.fields.includes("date") && (
+                            <DateInputField
+                                label="Date"
+                                name="dateInput"
+                                value={startDateInput}
+                                onChange={(value) => setStartDateInput(formatDateYYYYMMDD(new Date(value)))}
+                                isDisabled={isDisabled}
+                                isRequired={isFieldRequired("date")}
+                                minDate={formatDateYYYYMMDD(new Date())}
+                            />
+                        )}
+                    </div>
+
+                    <div style={{ flex: '1' }}>
+                        {selectedType?.fields.includes("time") && (
+                            <TimeInputField
+                                label="Time"
+                                name="timeInput"
+                                value={timeInput}
+                                onChange={input => setTimeInput(input)}
+                                isDisabled={isDisabled}
+                                isRequired={isFieldRequired("description")}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                {selectedType?.fields.includes("meeting") && (
+                    <SelectField
+                        label="Meeting"
+                        name="meetingSelect"
+                        value={meeting}
+                        onChange={selectedOption => setMeeting(selectedOption)}
+                        options={meetings.map((meeting) => ({
+                            value: meeting.id,
+                            label: meeting.title,
+                        }))}
+                        isDisabled={isDisabled}
+                        isRequired={isFieldRequired("meeting")}
+                    />
+                )}
+
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
+                    <div style={{ flex: '1' }}>
+                        {
+                            formErrors.length > 0 && formErrors.map((err) => (
+                                <label>
+                                    {err}<label style={{ color: "red" }}> *</label>
+                                </label>
+                            ))
+
+                        }
+                    </div>
+
+                    <div style={{ flex: '1' }}>
+                        <div className="submit-bttn">
+                            <button type="submit" className="btn btn-primary">
+                                {isNewTaskView ? 'Create' : isEditTaskView ? 'Update' : 'Back'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
             </form>

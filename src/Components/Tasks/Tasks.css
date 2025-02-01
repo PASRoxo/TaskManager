@@ -52,6 +52,14 @@
   margin: 7px 5px 7px;
 }
 
+.task-field.description {
+  white-space: "nowrap";
+  overflow: "hidden";
+  text-overflow: ellipsis;
+  display: "block";
+  width: "100%";
+}
+
 .task-actions {
   position: absolute;
   display: none;

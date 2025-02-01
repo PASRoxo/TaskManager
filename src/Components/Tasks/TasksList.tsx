@@ -1,7 +1,7 @@
 import './Tasks.css';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, Task } from '../../Features/tasksSlice';
+import { deleteTask, Task, TaskType } from '../../Features/tasksSlice';
 import { Link } from 'react-router-dom';
 import { deleteData } from '../apiRequests';
 
@@ -9,6 +9,7 @@ function TasksList() {
     const dispatch = useDispatch();
 
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
+    const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
     const status = useSelector((state: RootState) => state.tasksSlice.status);
     const error = useSelector((state: RootState) => state.tasksSlice.error);
 
@@ -18,6 +19,10 @@ function TasksList() {
         await deleteData(`tasks/${id}`);
         dispatch(deleteTask(id))
     }
+
+    const getTaskType = (taskType: string) => {
+        return taskTypes.find(type => type.id === taskType);
+    };
 
     return (
         <div className='ToDoList'>
@@ -33,16 +38,27 @@ function TasksList() {
             {status === 'loading' && <p>Loading tasks...</p>}
             {status === 'failed' && <p>Failed to load tasks</p>}
             {tasks.length > 0 ? (
-                tasks.map((task) => (
-                    <Link to={`/tasks/${task.id}`} key={task.id} className='list-task'>
-                        <h4 className='task-field'>{task.title}</h4>
-                        <label className='task-field'>Priority: {task.priority}</label>
-                        <div className='task-actions'>
-                            <Link to={`/editTask/${task.id}`} className="task-bttn bi bi-pencil-square btn btn-primary" />
-                            <button onClick={(e) => handleDelete(e, task.id)} className="task-bttn bi bi-trash BsTrashFill btn btn-danger" />
-                        </div>
-                    </Link>
-                ))
+                tasks.map((task) => {
+                    const currTaskType = getTaskType(task.type);
+                    return (
+                        <Link to={`/tasks/${task.id}`} key={task.id} className='list-task'>
+                            {currTaskType && currTaskType.fields.includes("description") && (
+                                <>
+                                    <h4 className='task-field'>{task.title}</h4>
+                                    <label className='task-field description'>Description: {task.description}</label>
+                                </>
+                            )}
+
+                            {currTaskType && currTaskType.fields.includes("startDate") && (
+                                <label className='task-field'>Start Date: {task.startDate}</label>
+                            )}
+
+                            <div className='task-actions'>
+                                <Link to={`/editTask/${task.id}`} className="task-bttn bi bi-pencil-square btn btn-primary" />
+                                <button onClick={(e) => handleDelete(e, task.id)} className="task-bttn bi bi-trash BsTrashFill btn btn-danger" />
+                            </div>
+                        </Link>)
+                })
             ) : (
                 <p>No tasks available</p>
             )}
