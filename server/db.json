@@ -90,6 +90,7 @@
         "title",
         "category",
         "description",
+        "priority",
         "meeting"
       ],
       "required": [

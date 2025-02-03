@@ -35,9 +35,19 @@ function CategoriesList() {
             {status === 'failed' && <p>Failed to load tasks</p>}
             {categories.length > 0 ? (
                 categories.map((category) => (
-                    <Link to={`/categories/${category.id}`} key={category.id} className='list-category'>
-                        <h4 className='category-field'>{category.name}</h4>
-                        <label className='category-field'>Color Code: {category.colorCode}</label>
+                    <Link to={`/categories/${category.id}`}
+                        key={category.id}
+                        className='list-category'
+                        style={{
+                            background: `linear-gradient(to left, ${category.colorCode} 0%, white 100%)`,
+                            backgroundSize: "10%",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "right"
+                        }}>
+
+                        <h4 className='category-field'>{category?.name}</h4>
+                        <label className='task-field'>{category?.description}</label>
+
                         <div className='category-actions'>
                             <Link to={`/editCategory/${category.id}`} className="category-bttn bi bi-pencil-square btn btn-primary" />
                             <button onClick={(e) => handleDelete(e, category.id)} className="category-bttn bi bi-trash BsTrashFill btn btn-danger" />

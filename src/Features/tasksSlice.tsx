@@ -11,6 +11,26 @@ export const fetchApiTasks = createAsyncThunk("tasks/fetchData", async () => {
     return tasks;
 });
 
+export const taskFields = {
+    id: "id",
+    title: "title",
+    category: "category",
+    type: "type",
+    priority: "priority",
+    description: "description",
+    startDate: "startDate",
+    endDate: "endDate",
+    date: "date",
+    time: "time",
+    meeting: "meeting"
+};
+
+export const priorityOptions = [
+    { value: "high", label: "High", bg: "linear-gradient(to left, red 0%, white 100%)" },
+    { value: "medium", label: "Medium", bg: "linear-gradient(to left, yellow 0%, white 100%)" },
+    { value: "low", label: "Low", bg: "linear-gradient(to left, green 0%, white 100%)" },
+];
+
 export interface Task {
     id: string;
     title: string;

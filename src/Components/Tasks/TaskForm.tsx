@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useMatch } from "react-router-dom";
-import { addTask, editTask, Task, TaskType } from "../../Features/tasksSlice";
+import { addTask, editTask, priorityOptions, Task, TaskType } from "../../Features/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
@@ -209,11 +209,7 @@ function TasksForm() {
                         name="prioritySelect"
                         value={priority}
                         onChange={selectedOption => setPriority(selectedOption)}
-                        options={[
-                            { value: "high", label: "High" },
-                            { value: "medium", label: "Medium" },
-                            { value: "low", label: "Low" },
-                        ]}
+                        options={priorityOptions}
                         isDisabled={isDisabled}
                         isRequired={isFieldRequired("priority")}
                     />

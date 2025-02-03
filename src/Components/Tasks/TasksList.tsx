@@ -1,7 +1,7 @@
 import './Tasks.css';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, Task, TaskType } from '../../Features/tasksSlice';
+import { deleteTask, priorityOptions, Task, taskFields, TaskType } from '../../Features/tasksSlice';
 import { Link } from 'react-router-dom';
 import { deleteData } from '../apiRequests';
 
@@ -24,6 +24,11 @@ function TasksList() {
         return taskTypes.find(type => type.id === taskType);
     };
 
+    const getMeetingTitle = (meetingId: string) => {
+        const meeting = tasks.find((meeting) => meeting.id === meetingId);
+        return meeting ? meeting.title : "No associated meeting";
+    };
+
     return (
         <div className='ToDoList'>
 
@@ -41,16 +46,42 @@ function TasksList() {
                 tasks.map((task) => {
                     const currTaskType = getTaskType(task.type);
                     return (
-                        <Link to={`/tasks/${task.id}`} key={task.id} className='list-task'>
-                            {currTaskType && currTaskType.fields.includes("description") && (
-                                <>
-                                    <h4 className='task-field'>{task.title}</h4>
-                                    <label className='task-field description'>Description: {task.description}</label>
-                                </>
+                        <Link to={`/tasks/${task.id}`}
+                            key={task.id}
+                            className={`list-task`}
+                            style={{
+                                background: priorityOptions.find(opt => opt.value === task.priority)?.bg || "",
+                                backgroundSize: "10%",
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "right"
+                            }}>
+
+                            {currTaskType && currTaskType.fields.includes(taskFields.title) && task.title && (
+                                <h4 className='task-field title'>{task.title}</h4>
                             )}
 
-                            {currTaskType && currTaskType.fields.includes("startDate") && (
-                                <label className='task-field'>Start Date: {task.startDate}</label>
+                            {currTaskType && currTaskType.fields.includes(taskFields.description) && task.description && (
+                                <label className='task-field description'>{task.description}</label>
+                            )}
+
+                            {currTaskType && currTaskType.fields.includes(taskFields.startDate) && task.startDate && (
+                                <label className='task-field'>
+                                    {currTaskType.fields.includes(taskFields.endDate) && task.endDate
+                                        ? `Timeframe: ${task.startDate} - ${task.endDate}`
+                                        : `Start Date: ${task.startDate}`}
+                                </label>
+                            )}
+
+                            {currTaskType && currTaskType.fields.includes(taskFields.date) && task.date && (
+                                <label className='task-field'>Date: {task.date}</label>
+                            )}
+
+                            {currTaskType && currTaskType.fields.includes(taskFields.time) && task.time && (
+                                <label className='task-field'>Starting at: {task.time}</label>
+                            )}
+
+                            {currTaskType && currTaskType.fields.includes(taskFields.meeting) && task.meeting && (
+                                <label className='task-field'>Meeting: {getMeetingTitle(task.meeting)}</label>
                             )}
 
                             <div className='task-actions'>
