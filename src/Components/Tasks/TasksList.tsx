@@ -2,13 +2,19 @@ import './Tasks.css';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTask, priorityOptions, Task, taskFields, TaskType } from '../../Features/tasksSlice';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useMatch } from 'react-router-dom';
 import { deleteData } from '../apiRequests';
 
-function TasksList() {
-    const dispatch = useDispatch();
+interface TasksListProps {
+    tasks: Task[]
+    categoryID?: string
+}
 
-    const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
+function TasksList({ tasks, categoryID }: TasksListProps) {
+    const dispatch = useDispatch();
+    const isTasksListView = useMatch('/tasks')
+    const isCategoriesView = useMatch('/categories*')
+
     const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
     const status = useSelector((state: RootState) => state.tasksSlice.status);
     const error = useSelector((state: RootState) => state.tasksSlice.error);
@@ -30,13 +36,16 @@ function TasksList() {
     };
 
     return (
+
         <div className='ToDoList'>
 
-            <h2 id='toDoList-title'>
-                To Do List
-            </h2>
+            {isTasksListView &&
+                <h2 id='toDoList-title'>
+                    To Do List
+                </h2>
+            }
 
-            <Link to={'/newTask'} className='add-task-button'>
+            <Link to={'/newTask'} className='add-task-button' state={{ fromCategories: isCategoriesView, categoryID: categoryID }}>
                 <span className="plus-icon">+</span> Add New Task
             </Link>
 
@@ -50,7 +59,7 @@ function TasksList() {
                             key={task.id}
                             className={`list-task`}
                             style={{
-                                background: priorityOptions.find(opt => opt.value === task.priority)?.bg || "",
+                                background: priorityOptions.find(opt => opt.value === task.priority)?.bg || "white",
                                 backgroundSize: "10%",
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "right"

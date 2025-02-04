@@ -6,6 +6,13 @@ export const fetchApiCategories = createAsyncThunk("categories/fetchData", async
     return categories;
 });
 
+export const categoryFields = {
+    id: "id",
+    name: "name",
+    colorCode: "colorCode",
+    description: "description"
+};
+
 export interface Category {
     id: string;
     name: string;

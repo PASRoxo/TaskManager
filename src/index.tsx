@@ -11,6 +11,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import CategoriesList from './Components/Categories/CategoriesList';
 import CategoryForm from './Components/Categories/CategoryForm';
+import { RootState } from './store';
+import { useSelector } from 'react-redux';
+import { Task } from './Features/tasksSlice';
+
+const TaskListWrapper = () => {
+  const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
+  return <TasksList tasks={tasks} />;
+};
 
 const router = createBrowserRouter([
   {
@@ -24,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/tasks',
-        element: <TasksList />,
+        element: <TaskListWrapper />,
       },
       {
         path: '/newTask',

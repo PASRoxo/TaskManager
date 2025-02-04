@@ -1,5 +1,5 @@
-import { useParams, useNavigate, useMatch } from "react-router-dom";
-import { addTask, editTask, priorityOptions, Task, TaskType } from "../../Features/tasksSlice";
+import { useParams, useNavigate, useMatch, useLocation } from "react-router-dom";
+import { addTask, editTask, priorityOptions, Task, taskFields, TaskType } from "../../Features/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useState } from "react";
@@ -14,6 +14,9 @@ function TasksForm() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const { fromCategories, categoryID } = location.state || {};
 
     const tasks: Task[] = useSelector((state: RootState) => state.tasksSlice.tasks);
     const meetings: Task[] = tasks.filter(task => task.type === 'meeting');
@@ -67,6 +70,12 @@ function TasksForm() {
     };
 
     useEffect(() => {
+        if (fromCategories) {
+            setCategory(categoryID)
+        }
+    }, [fromCategories]);
+
+    useEffect(() => {
         if (task) {
             setTitle(task.title || '');
             setCategory(task.category || '');
@@ -97,21 +106,21 @@ function TasksForm() {
             return;
         }
 
-        const { fields: taskFields } = selectedType;
+        const { fields: taskFormFields } = selectedType;
         const { required: requiredFields } = selectedType;
 
         let formInputs: { [key: string]: string } = {};
 
-        taskFields.forEach(field => {
-            field === "title" && title && (formInputs.title = title);
-            field === "category" && category && (formInputs.category = category);
-            field === "priority" && priority && (formInputs.priority = priority);
-            field === "description" && description && (formInputs.description = description);
-            field === "startDate" && startDateInput && (formInputs.startDate = startDateInput);
-            field === "endDate" && endDateInput && (formInputs.endDate = endDateInput);
-            field === "date" && startDateInput && (formInputs.date = startDateInput);
-            field === "time" && timeInput && (formInputs.time = timeInput);
-            field === "meeting" && meeting && (formInputs.meeting = meeting);
+        taskFormFields.forEach(field => {
+            field === taskFields.title && title && (formInputs.title = title);
+            field === taskFields.category && category && (formInputs.category = category);
+            field === taskFields.priority && priority && (formInputs.priority = priority);
+            field === taskFields.description && description && (formInputs.description = description);
+            field === taskFields.startDate && startDateInput && (formInputs.startDate = startDateInput);
+            field === taskFields.endDate && endDateInput && (formInputs.endDate = endDateInput);
+            field === taskFields.date && startDateInput && (formInputs.date = startDateInput);
+            field === taskFields.time && timeInput && (formInputs.time = timeInput);
+            field === taskFields.meeting && meeting && (formInputs.meeting = meeting);
         });
 
         const missingFields = requiredFields.filter(field => {
@@ -119,7 +128,9 @@ function TasksForm() {
         });
 
         if (missingFields.length > 0) {
-            alert("All fields must be filled")
+            addFormError(FORM_ERRORS.req_field_missing);
+            alert(FORM_ERRORS.req_field_missing)
+            return
         } else if (isNewTaskView || isEditTaskView) {
             try {
                 const taskToSave: Task = {
@@ -138,7 +149,7 @@ function TasksForm() {
                 }
                 navigate('/tasks')
             } catch (error) {
-                console.error('Error saving task:', error);
+                console.error(FORM_ERRORS.error_saving("task"), error);
             }
         } else {
             navigate('/tasks')
@@ -177,18 +188,18 @@ function TasksForm() {
             )}
 
             <form onSubmit={handleSubmit}>
-                {selectedType?.fields.includes("title") && (
+                {selectedType?.fields.includes(taskFields.title) && (
                     <TextInputField
                         label="Title"
                         name="titleInput"
                         value={title}
                         onChange={input => setTitle(input)}
                         isDisabled={isDisabled}
-                        isRequired={isFieldRequired("title")}
+                        isRequired={isFieldRequired(taskFields.title)}
                     />
                 )}
 
-                {selectedType?.fields.includes("category") && (
+                {selectedType?.fields.includes(taskFields.category) && (
                     <SelectField
                         label="Category"
                         name="categorySelect"
@@ -199,11 +210,11 @@ function TasksForm() {
                             label: cat.name,
                         }))}
                         isDisabled={isDisabled}
-                        isRequired={isFieldRequired("category")}
+                        isRequired={isFieldRequired(taskFields.category)}
                     />
                 )}
 
-                {selectedType?.fields.includes("priority") && (
+                {selectedType?.fields.includes(taskFields.priority) && (
                     <SelectField
                         label="Priority"
                         name="prioritySelect"
@@ -211,11 +222,11 @@ function TasksForm() {
                         onChange={selectedOption => setPriority(selectedOption)}
                         options={priorityOptions}
                         isDisabled={isDisabled}
-                        isRequired={isFieldRequired("priority")}
+                        isRequired={isFieldRequired(taskFields.priority)}
                     />
                 )}
 
-                {selectedType?.fields.includes("description") && (
+                {selectedType?.fields.includes(taskFields.description) && (
                     <TextAreaField
                         label="Description"
                         name="descriptionInput"
@@ -223,33 +234,33 @@ function TasksForm() {
                         onChange={input => setDescription(input)}
                         rows={5}
                         isDisabled={isDisabled}
-                        isRequired={isFieldRequired("description")}
+                        isRequired={isFieldRequired(taskFields.description)}
                     />
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <div style={{ flex: '1' }}>
-                        {selectedType?.fields.includes("startDate") && (
+                        {selectedType?.fields.includes(taskFields.startDate) && (
                             <DateInputField
                                 label="Start Date"
                                 name="startDateInput"
                                 value={startDateInput}
                                 onChange={(value) => setStartDateInput(formatDateYYYYMMDD(new Date(value)))}
                                 isDisabled={isDisabled}
-                                isRequired={isFieldRequired("startDate")}
+                                isRequired={isFieldRequired(taskFields.startDate)}
                             />
                         )}
                     </div>
 
                     <div style={{ flex: '1' }}>
-                        {selectedType?.fields.includes("endDate") && (
+                        {selectedType?.fields.includes(taskFields.endDate) && (
                             <DateInputField
                                 label="End Date"
                                 name="endDateInput"
                                 value={endDateInput}
                                 onChange={(value) => setEndDateInput(formatDateYYYYMMDD(new Date(value)))}
                                 isDisabled={isDisabled}
-                                isRequired={isFieldRequired("endDate")}
+                                isRequired={isFieldRequired(taskFields.endDate)}
                                 minDate={startDateInput ? formatDateYYYYMMDD(new Date(startDateInput)) : undefined}
                             />
                         )}
@@ -258,34 +269,34 @@ function TasksForm() {
 
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <div style={{ flex: '1' }}>
-                        {selectedType?.fields.includes("date") && (
+                        {selectedType?.fields.includes(taskFields.date) && (
                             <DateInputField
                                 label="Date"
                                 name="dateInput"
                                 value={startDateInput}
                                 onChange={(value) => setStartDateInput(formatDateYYYYMMDD(new Date(value)))}
                                 isDisabled={isDisabled}
-                                isRequired={isFieldRequired("date")}
+                                isRequired={isFieldRequired(taskFields.date)}
                                 minDate={formatDateYYYYMMDD(new Date())}
                             />
                         )}
                     </div>
 
                     <div style={{ flex: '1' }}>
-                        {selectedType?.fields.includes("time") && (
+                        {selectedType?.fields.includes(taskFields.time) && (
                             <TimeInputField
                                 label="Time"
                                 name="timeInput"
                                 value={timeInput}
                                 onChange={input => setTimeInput(input)}
                                 isDisabled={isDisabled}
-                                isRequired={isFieldRequired("description")}
+                                isRequired={isFieldRequired(taskFields.time)}
                             />
                         )}
                     </div>
                 </div>
 
-                {selectedType?.fields.includes("meeting") && (
+                {selectedType?.fields.includes(taskFields.meeting) && (
                     <SelectField
                         label="Meeting"
                         name="meetingSelect"
@@ -296,7 +307,7 @@ function TasksForm() {
                             label: meeting.title,
                         }))}
                         isDisabled={isDisabled}
-                        isRequired={isFieldRequired("meeting")}
+                        isRequired={isFieldRequired(taskFields.meeting)}
                     />
                 )}
 
