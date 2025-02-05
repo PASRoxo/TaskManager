@@ -78,34 +78,29 @@ function CategoriesForm() {
             return !formInputs[field] || isEmptyString(formInputs[field]);
         });
 
+        console.log(missingFields)
+
         if (missingFields.length > 0) {
             addFormError(FORM_ERRORS.req_field_missing);
             alert(FORM_ERRORS.req_field_missing)
             return
         } else if (isNewCategoryView || isEditCategoryView) {
             try {
+                const categoryToSave: Category = {
+                    id: isNewCategoryView ? uuidv4() : id as string,
+                    name: formInputs.name,
+                    colorCode: formInputs.colorCode,
+                    description: formInputs.description,
+                };
                 if (isNewCategoryView) {
-                    const newCategory = {
-                        id: uuidv4(),
-                        name: name,
-                        colorCode: colorCode,
-                        description: description,
-                    };
-
-                    await createData('categories', newCategory);
-                    dispatch(addCategory(newCategory));
+                    await createData('categories', categoryToSave);
+                    dispatch(addCategory(categoryToSave));
 
                 } else {
-                    const editedCategory = {
-                        id: id as string,
-                        name: name,
-                        colorCode: colorCode,
-                        description: description,
-                    };
-
-                    await updateData(`categories/${id}`, editedCategory);
-                    dispatch(editCategory(editedCategory));
+                    await updateData(`categories/${id}`, categoryToSave);
+                    dispatch(editCategory(categoryToSave));
                 }
+
                 navigate('/categories')
             } catch (error) {
                 console.error(FORM_ERRORS.error_saving("category"), error);

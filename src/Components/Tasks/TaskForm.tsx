@@ -70,10 +70,10 @@ function TasksForm() {
     };
 
     useEffect(() => {
-        if (fromCategories) {
+        if (fromCategories && categoryID) {
             setCategory(categoryID)
         }
-    }, [fromCategories]);
+    }, [fromCategories, categoryID]);
 
     useEffect(() => {
         if (task) {
@@ -113,7 +113,9 @@ function TasksForm() {
 
         taskFormFields.forEach(field => {
             field === taskFields.title && title && (formInputs.title = title);
-            field === taskFields.category && category && (formInputs.category = category);
+            if (field === taskFields.category) {
+                formInputs.category = fromCategories ? categoryID : category;
+            }
             field === taskFields.priority && priority && (formInputs.priority = priority);
             field === taskFields.description && description && (formInputs.description = description);
             field === taskFields.startDate && startDateInput && (formInputs.startDate = startDateInput);
@@ -188,6 +190,21 @@ function TasksForm() {
             )}
 
             <form onSubmit={handleSubmit}>
+                {selectedType?.fields.includes(taskFields.category) && (
+                    <SelectField
+                        label="Category"
+                        name="categorySelect"
+                        value={fromCategories ? categoryID : category}
+                        onChange={selectedOption => setCategory(selectedOption)}
+                        options={categories.map((cat: any) => ({
+                            value: cat.id,
+                            label: cat.name,
+                        }))}
+                        isDisabled={isDisabled || fromCategories}
+                        isRequired={isFieldRequired(taskFields.category)}
+                    />
+                )}
+
                 {selectedType?.fields.includes(taskFields.title) && (
                     <TextInputField
                         label="Title"
@@ -196,21 +213,6 @@ function TasksForm() {
                         onChange={input => setTitle(input)}
                         isDisabled={isDisabled}
                         isRequired={isFieldRequired(taskFields.title)}
-                    />
-                )}
-
-                {selectedType?.fields.includes(taskFields.category) && (
-                    <SelectField
-                        label="Category"
-                        name="categorySelect"
-                        value={category}
-                        onChange={selectedOption => setCategory(selectedOption)}
-                        options={categories.map((cat: any) => ({
-                            value: cat.id,
-                            label: cat.name,
-                        }))}
-                        isDisabled={isDisabled}
-                        isRequired={isFieldRequired(taskFields.category)}
                     />
                 )}
 

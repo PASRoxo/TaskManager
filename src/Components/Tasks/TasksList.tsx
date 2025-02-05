@@ -13,7 +13,7 @@ interface TasksListProps {
 function TasksList({ tasks, categoryID }: TasksListProps) {
     const dispatch = useDispatch();
     const isTasksListView = useMatch('/tasks')
-    const isCategoriesView = useMatch('/categories*')
+    const isCategoriesView = useMatch('/categories/*')
 
     const taskTypes: TaskType[] = useSelector((state: RootState) => state.tasksSlice.taskTypes);
     const status = useSelector((state: RootState) => state.tasksSlice.status);
